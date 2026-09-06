@@ -42,17 +42,39 @@ Created a dedicated Azure subscription and core resource group to provide the fo
 
 The resource group was deployed in **UK South** and structured to host the resources introduced throughout later modules.
 
+#### Evidence
+
+**Azure Cloud Security subscription**
+
+![Azure Cloud Security subscription](evidence/M1-E01-Azure-Cloud-Security-Subscription.png)
+
+*Dedicated Azure subscription used for the Cloud Security Engineering environment.*
+
+**Core resource group**
+
+![Core Azure resource group](evidence/M1-E02-Core-Resource-Group.png)
+
+*Core resource group established in UK South as the foundation for the security engineering environment.*
+
 ### 2. Role-Based Access Control
 
 Applied Azure RBAC at resource-group scope to demonstrate least-privilege access.
 
 **Entra Project 1** was assigned the **Reader** role, allowing visibility of resources without modification privileges.
 
-#### Validation
+#### Evidence
+
+![RBAC least-privilege assignment](evidence/M1-E03-RBAC-Least-Privilege-Assignment.png)
+
+*Reader role assigned at resource-group scope to demonstrate least-privilege access.*
 
 The Reader account attempted to deploy a resource. Azure denied the operation because the identity did not have the required deployment permissions.
 
 This validated that RBAC was being enforced rather than simply configured.
+
+![RBAC write operation denied](evidence/M1-E04-RBAC-Reader-Write-Denied.png)
+
+*Negative validation test confirming that the Reader identity could view the environment but could not perform resource deployment operations.*
 
 ### 3. Resource Governance
 
@@ -63,11 +85,19 @@ Governance metadata was applied using resource tags:
 - `Project: CloudSecurityPortfolio`
 - `workload: core`
 
+#### Evidence
+
+![Azure resource governance tags](evidence/M1-E05-Resource-Governance-Tags.png)
+
+*Governance metadata applied to the core resource group for ownership, environment, project and workload classification.*  
+
 ### 4. Resource Protection
 
 A **Delete lock** named `lock-prevent-accidental-delete` was applied to the core resource group.
 
-#### Validation
+![Azure resource lock deletion blocked](evidence/M1-E06-Resource-Lock-Deletion-Blocked.png)
+
+*Controlled deletion attempt blocked by Azure, validating enforcement of the Delete lock.*
 
 Deletion of the resource group was deliberately attempted and Azure blocked the operation because of the active lock.
 
@@ -79,7 +109,9 @@ Azure Policy was configured using the **Allowed locations** definition.
 
 The policy restricts resources within the core resource group to **UK South**.
 
-#### Validation
+![Azure Policy East US deployment denied](evidence/M1-E07-Azure-Policy-EastUS-Denied.png)
+
+*Controlled deployment outside the approved UK South region rejected by Azure Policy, validating regional governance enforcement.*
 
 A Storage Account deployment was deliberately configured for **East US**.
 
