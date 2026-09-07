@@ -85,6 +85,11 @@ with the address space:
 The `/16` address space provides sufficient capacity for subnet segmentation while allowing additional network tiers to be introduced later without redesigning the VNet.
 
 ---
+### Implementation Evidence
+
+![Azure Virtual Network foundation](evidence/M2-E01-VNet-Foundation-Overview.png)
+
+*Figure 1 — Azure Virtual Network foundation showing the deployed `vnet-cloudsec-core-uks-01` network used as the secure networking foundation for the lab environment.*
 
 ## Network Segmentation
 
@@ -99,6 +104,11 @@ The virtual network was segmented into three `/24` subnets.
 Separating workloads into dedicated subnets establishes security boundaries and allows network controls to be applied independently to each workload tier.
 
 ---
+### Implementation Evidence
+
+![Azure subnet segmentation](evidence/M2-E02-Network-Subnet-Segmentation.png)
+
+*Figure 2 — Network segmentation implemented across the web, application and management tiers using dedicated Azure subnets.*
 
 ## Network Security Groups
 
@@ -120,6 +130,19 @@ Custom security rules were used to control communication between the network tie
 
 This provides subnet-level traffic filtering and supports least-privilege network access.
 
+### Implementation Evidence
+
+![Web tier NSG inbound rules](evidence/M2-E03-Web-NSG-Inbound-Rules.png)
+
+*Figure 3 — Web-tier Network Security Group configuration demonstrating controlled inbound access through explicitly defined security rules.*
+
+![Application tier NSG rule](evidence/M2-E04-App-NSG-Web-To-App-Rule.png)
+
+*Figure 4 — Application-tier NSG rule restricting application access to traffic originating from the authorised web tier.*
+
+![Management tier NSG default deny](evidence/M2-E05-Management-NSG-Default-Deny.png)
+
+*Figure 5 — Management-tier NSG configuration demonstrating restrictive access and default-deny network security controls.*
 ---
 
 ## User-Defined Routing
@@ -142,6 +165,11 @@ This overrides the normal default route for the application subnet and drops tra
 
 The configuration demonstrates how Azure User Defined Routes can be used to control workload traffic paths and prevent unrestricted direct Internet routing.
 
+### Implementation Evidence
+
+![User-defined route blocking direct Internet access](evidence/M2-UDR-Block-Direct-Internet.png)
+
+*Figure 6 — User-defined route configured for `0.0.0.0/0` with next-hop type `None`, demonstrating controlled routing designed to prevent direct Internet egress from the application subnet.*
 ---
 
 ## Private DNS
@@ -181,6 +209,11 @@ This produces the internal DNS name:
 
 The record demonstrates how internal workloads can be addressed through private DNS rather than relying directly on IP addresses or public DNS.
 
+### Implementation Evidence
+
+![Private DNS A record](evidence/M2-Private-DNS-A-Record.png)
+
+*Figure 7 — Azure Private DNS A record mapping `app01.cloudsec.internal` to the private IP address `10.20.2.10`.*
 ---
 
 ## Public Exposure Review
@@ -191,6 +224,11 @@ No Public IP Address resources were deployed as part of the Module 2 network fou
 
 Avoiding unnecessary public IP addresses reduces the externally exposed attack surface and supports a private-by-design Azure architecture.
 
+### Implementation Evidence
+
+![No public IP exposure](evidence/M2-Public-IP-No-Exposure.png)
+
+*Figure 8 — Azure Public IP inventory confirming that no Public IP Address resources were deployed as part of the Module 2 network foundation.*
 ---
 
 ## Azure Firewall Design Review
@@ -212,6 +250,11 @@ The decision avoids unnecessary consumption costs while retaining the service as
 
 The implemented environment instead demonstrates the underlying network security controls required before introducing centralised firewall inspection.
 
+### Design Evidence
+
+![Azure Firewall cost-aware design review](evidence/M2-Azure-Firewall-Cost-Aware-Design.png)
+
+*Figure 9 — Azure Firewall review showing that no firewall instance was deployed during this module. Firewall capabilities were assessed architecturally while avoiding unnecessary lab cost.*
 ---
 
 ## Security Design Principles
