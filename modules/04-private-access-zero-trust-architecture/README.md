@@ -108,6 +108,7 @@ Application traffic on TCP port 8080 is permitted from the web subnet `10.20.1.0
 
 ## Security Architecture
 
+## Security Architecture
 
 ```text
                         Administrator
@@ -138,6 +139,7 @@ privatelink.blob.core.       privatelink.vaultcore.
                       |
                       v
            vnet-cloudsec-core-uks-01
+```
 
 ### Evidence
 
