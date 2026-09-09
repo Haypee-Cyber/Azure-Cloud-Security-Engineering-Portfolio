@@ -33,6 +33,12 @@ DNS resolution from the application VM confirmed that the Storage Account resolv
 
 The previous service-endpoint-based access was removed and public network access to the Storage Account was disabled.
 
+### Evidence
+
+![Storage Private Endpoint validation](evidence/M4-T1-PrivateEndpoint-After-PublicAccess-Disabled.png)
+
+*Validation from the application VM showing Azure Blob Storage resolving through Private Link to private IP `10.20.2.5` and remaining reachable after public network access was disabled.*
+
 ## 2. Azure Key Vault Private Endpoint
 
 A Private Endpoint was deployed for `kv-cloudsec-app-uks-01`.
@@ -44,6 +50,12 @@ Private DNS integration was configured using:
 DNS resolution from the application VM confirmed that the Key Vault resolves to private IP `10.20.1.4`.
 
 Public network access to the Key Vault was disabled after private connectivity was validated.
+
+### Evidence
+
+![Key Vault Private Endpoint validation](evidence/M4-T2-KeyVault-PrivateEndpoint-After-PublicAccess-Disabled.png)
+
+*Validation from the application VM showing Azure Key Vault resolving through Private Link to private IP `10.20.1.4` and remaining reachable after public network access was disabled.*
 
 ## 3. Private DNS
 
@@ -75,6 +87,12 @@ Administrative SSH access is provided through Azure Bastion:
 `vnet-cloudsec-core-uks-01-bastion`
 
 This allows administrators to securely access the workload without exposing SSH directly to the internet.
+
+### Evidence
+
+![Azure Bastion secure administrative access](evidence/M4-T5-Bastion-Secure-Administrative-Access.png)
+
+*Azure Bastion configuration providing secure SSH administrative access to `vm-cloudsec-app-uks-01` without assigning a public IP address to the workload.*
 
 ## 6. Network Segmentation
 
@@ -120,6 +138,12 @@ privatelink.blob.core.       privatelink.vaultcore.
                       |
                       v
            vnet-cloudsec-core-uks-01
+
+### Evidence
+
+![Application VM network segmentation](evidence/M4-T5-Application-VM-Network-Segmentation.png)
+
+*Network configuration for `vm-cloudsec-app-uks-01`, demonstrating private addressing, subnet-level NSG protection and controlled application traffic within the segmented Azure virtual network.*
 
 
 ## Security Outcomes
