@@ -90,21 +90,37 @@ Application traffic on TCP port 8080 is permitted from the web subnet `10.20.1.0
 
 ## Security Architecture
 
-Administrator
-     |
-     v
-Azure Bastion
-     |
-     v
-Application VM (10.20.2.4)
-     |
-     +---- Private DNS ---- Storage Private Endpoint (10.20.2.5)
-     |
-     +---- Private DNS ---- Key Vault Private Endpoint (10.20.1.4)
 
-Storage Public Access: Disabled
-Key Vault Public Access: Disabled
-VM Public IP: None
+```text
+                        Administrator
+                             |
+                             v
+                       Azure Bastion
+                             |
+                             v
+                vm-cloudsec-app-uks-01
+                       10.20.2.4
+                             |
+          ---------------------------------
+          |                               |
+          v                               v
+ Storage Private Endpoint        Key Vault Private Endpoint
+       10.20.2.5                        10.20.1.4
+          |                               |
+          v                               v
+  stcloudsecappuks01          kv-cloudsec-app-uks-01
+ Public Access: Disabled      Public Access: Disabled
+          |                               |
+          v                               v
+privatelink.blob.core.       privatelink.vaultcore.
+     windows.net                  azure.net
+          \                               /
+           \                             /
+            -------- Private DNS --------
+                      |
+                      v
+           vnet-cloudsec-core-uks-01
+
 
 ## Security Outcomes
 
