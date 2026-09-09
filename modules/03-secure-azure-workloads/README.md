@@ -41,7 +41,21 @@ Security controls implemented include:
 
 The VM uses private IP address `10.20.2.4` and does not expose SSH directly to the Internet.
 
+### Evidence
+
+![Secure application VM deployment](evidence/M3-T1-Secure-Application-VM-Deployed.png)
+
+*Deployment of `vm-cloudsec-app-uks-01` as the secured application workload for the Cloud Security lab.*
+
+![Trusted Launch security](evidence/M3-T1-VM-Trusted-Launch-Security.png)
+
+*Trusted Launch security configuration for `vm-cloudsec-app-uks-01`, including Secure Boot and vTPM protection.*
+
+![Secure Bastion SSH access](evidence/M3-T2-Bastion-Secure-SSH-Access.png)
+
+*Successful secure SSH administrative access to `vm-cloudsec-app-uks-01` through Azure Bastion without exposing the VM through a public IP.*
 ---
+
 
 ## 2. Network-Isolated Workload
 
@@ -94,6 +108,11 @@ The storage request returned:
 
 This validated both the managed identity and its least-privilege RBAC authorization.
 
+### Evidence
+
+![Managed identity storage access](evidence/M3-T4-Managed-Identity-Storage-Access-200OK.png)
+
+*Successful HTTP 200 response from Azure Blob Storage using the system-assigned managed identity of `vm-cloudsec-app-uks-01`, validating credential-free authentication and least-privilege RBAC access.*
 ---
 
 ## 5. Azure Key Vault and Secret Management
