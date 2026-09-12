@@ -1,5 +1,3 @@
-# Azure-Cloud-Security-Engineering-Portfolio
-Hands-on Azure Cloud Security engineering portfolio demonstrating secure architecture, network security, workload protection, Zero Trust, governance, Infrastructure as Code, DevSecOps, Microsoft Sentinel, detection engineering and incident response.
 # Module 8 - Azure Monitoring & Microsoft Sentinel
 
 ## 1. Overview
@@ -8,7 +6,7 @@ This module implements centralized security monitoring and SIEM capabilities for
 
 The objective was to collect security and operational telemetry from Azure resources, centralize the data in Log Analytics, validate ingestion using KQL, and enable Microsoft Sentinel for security monitoring and investigation.
 
-The implementation demonstrates an end-to-end monitoring architecture:
+The implemented monitoring architecture is:
 
 **Azure Resources → Diagnostic Settings → Log Analytics Workspace → Microsoft Sentinel**
 
@@ -38,7 +36,7 @@ A centralized Log Analytics workspace was deployed for monitoring and security t
 **Region:** UK South  
 **Subscription:** `Azure-Cloud-Security-Lab`
 
-The workspace acts as the central telemetry repository for the lab environment.
+The workspace acts as the central telemetry repository for the Azure security environment.
 
 ---
 
@@ -59,13 +57,13 @@ The following Activity Log categories were enabled:
 - Autoscale
 - ResourceHealth
 
-Logs were configured to be sent to:
+The logs were configured to be sent to:
 
 `law-cloudsec-core-uks-01`
 
-The diagnostic configuration was validated through both the Azure Portal and its underlying JSON configuration.
+Initial `AzureActivity` queries returned no records while ingestion was still pending.
 
-Initial queries returned no `AzureActivity` records while ingestion was still pending. Subsequent Microsoft Sentinel validation confirmed successful ingestion, with 13 AzureActivity records received.
+Subsequent validation in Microsoft Sentinel confirmed successful ingestion, with **13 AzureActivity records received**.
 
 This demonstrated the importance of accounting for telemetry ingestion latency when validating Azure monitoring configurations.
 
@@ -77,25 +75,15 @@ Resource-level diagnostic logging was configured for security-sensitive Azure se
 
 ### Azure Key Vault
 
-Resource:
-
-`kv-cloudsec-app-uks-01`
-
-Diagnostic setting:
-
-`ds-keyvault-to-law`
+**Resource:** `kv-cloudsec-app-uks-01`  
+**Diagnostic setting:** `ds-keyvault-to-law`
 
 Key Vault audit telemetry and metrics were configured for collection and sent to the Log Analytics workspace.
 
 ### Azure Storage
 
-Resource:
-
-`stcloudsecappuks01`
-
-Blob service diagnostic setting:
-
-`ds-storage-blob-to-law`
+**Resource:** `stcloudsecappuks01`  
+**Blob diagnostic setting:** `ds-storage-blob-to-law`
 
 Storage data-plane logging was configured for:
 
@@ -104,7 +92,7 @@ Storage data-plane logging was configured for:
 - StorageDelete
 - Transaction metrics
 
-This provides visibility into operations performed against Blob Storage.
+This provides visibility into operations performed against Azure Blob Storage.
 
 ---
 
@@ -114,9 +102,9 @@ A legitimate Key Vault operation was generated from:
 
 `vm-cloudsec-app-uks-01`
 
-The VM used its system-assigned Managed Identity to authenticate to Azure Key Vault through the existing private-access architecture.
+The VM used its **system-assigned Managed Identity** to authenticate to Azure Key Vault through the private-access architecture implemented previously.
 
-The secret access operation returned HTTP 200.
+The secret access operation returned **HTTP 200 OK**.
 
 KQL was then used to validate ingestion:
 
@@ -132,27 +120,31 @@ The query returned successful `VaultGet` operations for:
 
 `KV-CLOUDSEC-APP-UKS-01`
 
-This confirmed:
+This validated the following telemetry path:
 
 **Managed Identity → Private Endpoint → Key Vault → Diagnostic Settings → Log Analytics**
 
-![Key Vault audit log validation](Evidence/M8-T4-KeyVault-Audit-Log-Ingestion-Validated.png)
+### Evidence
+
+![Key Vault audit log ingestion validation](Evidence/M8-T4-KeyVault-Audit-Log-Ingestion-Validated.png)
 
 ---
 
 ## 7. Storage Telemetry Validation
 
-A legitimate Blob Storage read operation was generated from the application VM using its system-assigned Managed Identity.
+A legitimate Blob Storage read operation was generated from the application VM using its **system-assigned Managed Identity**.
 
 Authentication was performed using Microsoft Entra ID rather than Storage Account Shared Key authentication.
 
 The operation generated Storage data-plane telemetry which was successfully queried from Log Analytics.
 
-This validated:
+This validated the following telemetry path:
 
 **Managed Identity → Private Endpoint → Blob Storage → Diagnostic Settings → Log Analytics**
 
-![Storage Blob log validation](Evidence/M8-T4-Storage-Blob-Log-Ingestion-Validated.png)
+### Evidence
+
+![Storage Blob log ingestion validation](Evidence/M8-T4-Storage-Blob-Log-Ingestion-Validated.png.png)
 
 ---
 
@@ -162,9 +154,9 @@ Microsoft Sentinel was enabled on the existing Log Analytics workspace:
 
 `law-cloudsec-core-uks-01`
 
-A separate workspace was not created.
+A separate Log Analytics workspace was not created.
 
-This extended the monitoring architecture from centralized log collection into SIEM capabilities for security monitoring, investigation, detection, and response.
+This extended the architecture from centralized telemetry collection into SIEM capabilities for security monitoring, detection, investigation and response.
 
 The resulting architecture is:
 
@@ -190,122 +182,131 @@ Response
 
 ---
 
-## 9. Sentinel Security Telemetry Validation
+## 9. Microsoft Sentinel Security Telemetry Validation
 
-### Azure Key Vault Connector
+### Azure Key Vault
 
 The Azure Key Vault connector was validated in Microsoft Sentinel.
 
 The connector showed:
 
 - Status: Connected
+- Microsoft provider
 - Key Vault telemetry received
-- AzureDiagnostics records available
+- `AzureDiagnostics` records available
 - Recent Key Vault data ingestion
 
 This confirmed that Key Vault security telemetry was available to Microsoft Sentinel.
 
-![Sentinel Key Vault connector](Evidence/M8-T6-Sentinel-KeyVault-Connector-Telemetry.png)
+### Evidence
 
-### Azure Activity Connector
+![Microsoft Sentinel Key Vault connector telemetry](Evidence/M8-T6-Sentinel-KeyVault-Connector-Telemetry.png)
 
-The Azure Activity connector was also validated.
+---
+
+### Azure Activity
+
+The Azure Activity connector was validated in Microsoft Sentinel.
 
 The connector showed:
 
 - Status: Connected
-- AzureActivity telemetry received
-- 13 AzureActivity records available during validation
+- Microsoft provider
 - Recent Activity Log ingestion
+- `AzureActivity` telemetry available
+- **13 AzureActivity records received during validation**
 
-This confirmed successful subscription-level Activity Log ingestion into the Sentinel-enabled workspace.
+This confirmed successful subscription-level Activity Log ingestion into the Sentinel-enabled Log Analytics workspace.
 
-![Sentinel Azure Activity telemetry](Evidence/M8-T6-Sentinel-AzureActivity-Telemetry-Validated.png)
+### Evidence
+
+![Microsoft Sentinel Azure Activity telemetry validation](Evidence/M8-T6-Sentinel-AzureActivity-Telemetry-Validated.png)
 
 ---
 
-## 10. Security Architecture
+## 10. Security Monitoring Architecture
 
 The completed monitoring architecture is:
 
 ```text
                          Azure Subscription
                                 |
-              +-----------------+-----------------+
-              |                                   |
-              v                                   v
-       Azure Activity Log                   Azure Resources
-                                            /            \
-                                           v              v
-                                      Key Vault        Storage
-                                           \              /
-                                            \            /
-                                             v          v
-                                          Diagnostic Settings
-                                                  |
-                                                  v
-                                      Log Analytics Workspace
-                                      law-cloudsec-core-uks-01
-                                                  |
-                                                  v
-                                         Microsoft Sentinel
-                                                  |
-                          +-----------------------+-----------------------+
-                          |                       |                       |
-                          v                       v                       v
-                     Monitoring              Detection             Investigation
+               +----------------+----------------+
+               |                                 |
+               v                                 v
+       Azure Activity Log                 Azure Resources
+                                         /              \
+                                        v                v
+                                   Key Vault          Storage
+                                        \                /
+                                         \              /
+                                          v            v
+                                        Diagnostic Settings
+                                                |
+                                                v
+                                    Log Analytics Workspace
+                                    law-cloudsec-core-uks-01
+                                                |
+                                                v
+                                       Microsoft Sentinel
+                                                |
+                        +-----------------------+-----------------------+
+                        |                       |                       |
+                        v                       v                       v
+                   Monitoring               Detection            Investigation
 ```
 
-The architecture centralizes security telemetry while maintaining the private-access and Managed Identity controls implemented in previous modules.
+This architecture centralizes security telemetry while maintaining the private-access, Managed Identity and Zero-Trust controls implemented in previous modules.
 
 ---
 
 ## 11. Security Engineering Outcomes
 
-This module demonstrated the ability to:
+This module demonstrated practical experience in:
 
-- Design centralized Azure monitoring architecture.
-- Deploy and configure Log Analytics.
-- Export subscription-level Azure Activity Logs.
-- Configure resource-level diagnostic settings.
-- Collect Key Vault security audit telemetry.
-- Collect Storage Blob data-plane telemetry.
-- Generate controlled test activity for validation.
-- Query security telemetry using KQL.
-- Troubleshoot telemetry ingestion delays.
-- Enable Microsoft Sentinel on an existing workspace.
-- Validate Sentinel data connectors.
-- Confirm end-to-end security telemetry ingestion.
+- Designing centralized Azure monitoring architecture.
+- Deploying and configuring Log Analytics.
+- Exporting subscription-level Azure Activity Logs.
+- Configuring resource-level diagnostic settings.
+- Collecting Key Vault security audit telemetry.
+- Collecting Azure Storage Blob data-plane telemetry.
+- Generating controlled activity to validate monitoring.
+- Querying security telemetry using KQL.
+- Troubleshooting telemetry ingestion.
+- Understanding Azure telemetry ingestion latency.
+- Enabling Microsoft Sentinel on an existing workspace.
+- Validating Microsoft Sentinel data connectors.
+- Confirming end-to-end security telemetry ingestion.
 
 ---
 
 ## 12. Key Engineering Lessons
 
-### Configuration does not equal validation
+### Configuration Does Not Equal Validation
 
-A diagnostic setting being present does not prove telemetry is being collected.
+A diagnostic setting being present does not prove that telemetry is successfully reaching the monitoring platform.
 
-The implementation therefore validated actual operations through KQL and Sentinel rather than relying solely on configuration screenshots.
+Actual resource operations were therefore generated and the resulting telemetry was queried to confirm end-to-end ingestion.
 
-### Telemetry can have ingestion latency
+### Telemetry Can Have Ingestion Latency
 
-Azure Activity Log configuration was correct while initial `AzureActivity` queries returned no records.
+The Azure Activity diagnostic configuration was present while initial `AzureActivity` queries returned no records.
 
-Later Sentinel validation confirmed successful ingestion.
+Later Microsoft Sentinel validation confirmed successful ingestion.
 
-Operational monitoring should therefore account for expected ingestion delays before treating missing telemetry as a configuration failure.
+Monitoring implementations must therefore account for ingestion latency before treating missing telemetry as a configuration failure.
 
-### Identity-based access supports stronger security
+### Identity-Based Access Supports Stronger Security
 
 Key Vault and Storage validation used Managed Identity and Microsoft Entra authorization rather than embedded credentials or Storage Shared Keys.
 
-This maintains the least-privilege and Zero-Trust architecture implemented earlier in the project.
+This maintained the least-privilege and Zero-Trust architecture implemented in earlier modules.
 
-### Monitoring completes the security control lifecycle
+### Monitoring Completes the Security Control Lifecycle
 
-Previous modules focused on preventing unauthorized access.
+Previous modules concentrated primarily on securing and restricting access to Azure resources.
 
-This module added visibility into what actually happens within the environment.
+This module introduced centralized visibility into activity occurring within the environment.
 
 The security lifecycle therefore progresses from:
 
@@ -313,12 +314,12 @@ The security lifecycle therefore progresses from:
 
 ---
 
-## 13. Evidence
+## 13. Evidence Register
 
-| Evidence | Description |
+| Evidence | Validation |
 |---|---|
 | `M8-T4-KeyVault-Audit-Log-Ingestion-Validated.png` | KQL validation of successful Key Vault audit telemetry ingestion. |
-| `M8-T4-Storage-Blob-Log-Ingestion-Validated.png` | Validation of Azure Storage Blob data-plane telemetry ingestion. |
+| `M8-T4-Storage-Blob-Log-Ingestion-Validated.png.png` | Validation of Azure Storage Blob data-plane telemetry ingestion. |
 | `M8-T6-Sentinel-KeyVault-Connector-Telemetry.png` | Microsoft Sentinel Azure Key Vault connector connected and receiving telemetry. |
 | `M8-T6-Sentinel-AzureActivity-Telemetry-Validated.png` | Microsoft Sentinel Azure Activity connector connected with 13 AzureActivity records received during validation. |
 
@@ -328,6 +329,10 @@ The security lifecycle therefore progresses from:
 
 **Status: COMPLETE**
 
-Azure monitoring and Microsoft Sentinel capabilities have been implemented and validated.
+Azure monitoring and Microsoft Sentinel capabilities have been successfully implemented and validated.
 
-The environment now provides centralized telemetry collection through Log Analytics and SIEM capabilities through Microsoft Sentinel, establishing the monitoring foundation required for detection engineering, threat hunting, and incident response.
+The environment now provides centralized telemetry collection through Log Analytics and SIEM capabilities through Microsoft Sentinel.
+
+This establishes the monitoring foundation required for the next stage of the portfolio:
+
+**Module 9 — Detection Engineering, Threat Hunting & SOAR**
