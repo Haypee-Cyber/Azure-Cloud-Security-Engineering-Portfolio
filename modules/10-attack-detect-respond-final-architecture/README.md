@@ -161,7 +161,7 @@ Controlled Unauthorized Request
 
 ### Detection Evidence
 
-![Key Vault Unauthorized Access Detection](Evidence/M10-T2-KeyVault-Unauthorized-Access-Detected.png)
+![Key Vault Unauthorized Access Detected](../Evidence/M10-T2-KeyVault-Unauthorized-Access-Detected.png)
 
 *Detection validation of a controlled unauthenticated Azure Key Vault request. Key Vault audit telemetry captured the request from application VM `10.20.2.4` with `ResultSignature = Unauthorized`, correlating with the HTTP 401 response and demonstrating visibility of failed authentication activity.*
 
@@ -240,9 +240,9 @@ The architecture independently enforced:
 
 ### Authorized Access Evidence
 
-![Managed Identity Authorized Access](Evidence/M10-T4-Managed-Identity-Authorized-Access-200.png)
+![Managed Identity Authorized Key Vault Access](../Evidence/M10-T4-Managed-Identity-Authorized-Access-200.png)
 
-*Post-incident validation demonstrating that the application VM's system-assigned Managed Identity retained authorized access to Azure Key Vault with HTTP 200, while the earlier unauthenticated request was denied with HTTP 401.*
+*Post-incident validation confirming that the application VM's system-assigned Managed Identity retained legitimate access to Azure Key Vault, returning HTTP 200 while unauthenticated access remained denied.*
 
 ---
 
